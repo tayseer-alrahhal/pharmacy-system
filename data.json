@@ -1,0 +1,68 @@
+[
+  {
+    "name": "كل التصنيفات",
+    "slug": "all",
+    "status": "active",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "name": "مسكنات",
+    "slug": "painkillers",
+    "status": "active",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "name": "مضادات حيوية",
+    "slug": "antibiotics",
+    "status": "active",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "name": "فيتامينات",
+    "slug": "vitamins",
+    "status": "active",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "name": "ادوية قلب",
+    "slug": "cardiology",
+    "status": "active",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "name": "ادوية سكري",
+    "slug": "diabetes",
+    "status": "active",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "name": "ادوية ضغط",
+    "slug": "blood-pressure",
+    "status": "active",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "name": "مضادات التهاب",
+    "slug": "anti-inflammatory",
+    "status": "active",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "name": "ادوية جهاز هضمي",
+    "slug": "gastrointestinal",
+    "status": "active",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "name": "ادوية جلدية",
+    "slug": "dermatology",
+    "status": "active",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "name": "اخرى",
+    "slug": "other",
+    "status": "active",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  }
+]

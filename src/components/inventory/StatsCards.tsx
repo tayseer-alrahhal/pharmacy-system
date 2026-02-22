@@ -22,7 +22,6 @@ export function StatsCards() {
             const response = await fetch("/api/inventory")
             const data = await response.json();
             setStatsData(data.medicines);
-            console.log(data.medicines.length);
         }
         fetchStats();
     }, [])
@@ -48,6 +47,8 @@ export function StatsCards() {
             : 0,
 
     }
+
+    console.log(stats.low);
 
 
     const cards = [
