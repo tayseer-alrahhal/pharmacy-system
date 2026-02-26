@@ -1,12 +1,17 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Plus, Pill, RefreshCw, LogOut } from "lucide-react"
 import Link from 'next/link'
+import AddMedicineModel from './AddMedicineModel'
 
-export default function Header() {
+interface HeaderProps {
+    onAddClick: () => void;
+}
+
+export default function Header({ onAddClick }: HeaderProps) {
     return (
-        <header className="sticky top-0 z-40 border-b bg-(--color-bg-card) backdrop-blur border-(--color-border)">
+        <header className="relative top-0 z-40 border-b bg-(--color-bg-card) backdrop-blur border-(--color-border)">
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
                 <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-(--color-primary)">
@@ -32,6 +37,7 @@ export default function Header() {
                     </button>
 
                     <button
+                        onClick={onAddClick}
                         className="flex items-center px-4 py-2 rounded-md text-white transition bg-(--color-primary-dark) hover:bg-(--color-primary) cursor-pointer"
                     >
                         <Plus className="ml-2 h-4 w-4" />

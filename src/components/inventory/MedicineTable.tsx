@@ -405,6 +405,7 @@ export default function MedicineTable() {
                     </div>
                 </div>
             )}
+            
         </div>
 
     );
