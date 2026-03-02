@@ -3,16 +3,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, ChevronDown, Check, X } from "lucide-react";
 import { Category } from '@/types/categoriesTypes';
+import { FilterState } from './InventoryContainer';
 
+interface SearchAndCategoryProps {
+    filters: FilterState;
+    onFiltersChange: (filters: FilterState) => void;
+}
 
-
-
-export default function SearchAndCategory() {
+export default function SearchAndCategory({ filters, onFiltersChange }: SearchAndCategoryProps) {
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
     const [isStatusOpen, setIsStatusOpen] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState("كل التصنيفات");
-    const [selectedStatus, setSelectedStatus] = useState("كل الحالات");
-    const [searchQuery, setSearchQuery] = useState("");
     const [categories, setCategories] = useState<Category[]>([]);
 
     const categoryRef = useRef<HTMLDivElement>(null);
@@ -38,7 +38,6 @@ export default function SearchAndCategory() {
                 const response = await fetch('/api/categories');
                 const data = await response.json();
                 setCategories(data);
-                console.log(data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
             }
@@ -49,12 +48,17 @@ export default function SearchAndCategory() {
     const statuses = ["كل الحالات", "متوفر", "منخفض", "نفذ", "منتهي الصلاحية"];
 
     const clearFilters = () => {
-        setSelectedCategory("كل التصنيفات");
-        setSelectedStatus("كل الحالات");
-        setSearchQuery("");
+        onFiltersChange({
+            searchQuery: "",
+            selectedCategory: "كل التصنيفات",
+            selectedStatus: "كل الحالات",
+        });
     };
 
-    const hasFilters = selectedCategory !== "كل التصنيفات" || selectedStatus !== "كل الحالات" || searchQuery !== "";
+    const hasFilters =
+        filters.selectedCategory !== "كل التصنيفات" ||
+        filters.selectedStatus !== "كل الحالات" ||
+        filters.searchQuery !== "";
 
     return (
         <div className="w-full flex flex-col md:flex-row gap-3 items-center mb-6" dir="rtl">
@@ -62,8 +66,8 @@ export default function SearchAndCategory() {
             <div className="relative flex-[2.5] w-full group">
                 <input
                     type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    value={filters.searchQuery}
+                    onChange={(e) => onFiltersChange({ ...filters, searchQuery: e.target.value })}
                     placeholder="ابحث عن دواء بالاسم او رقم الدفعة..."
                     className="w-full h-11 pr-5 pl-12 bg-white border border-(--color-border) rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-(--color-primary)/10 focus:border-(--color-primary) transition-all duration-200 text-[14px] placeholder:text-(--color-text-muted) group-hover:border-gray-300"
                 />
@@ -78,7 +82,7 @@ export default function SearchAndCategory() {
                     onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                     className={`flex items-center justify-between w-full h-11 px-4 bg-white border ${isCategoryOpen ? 'border-(--color-primary) ring-2 ring-(--color-primary)/10' : 'border-(--color-border)'} rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-all duration-200 text-[14px] text-(--color-text-main) cursor-pointer hover:border-gray-300`}
                 >
-                    <span className="truncate">{selectedCategory}</span>
+                    <span className="truncate">{filters.selectedCategory}</span>
                     <ChevronDown className={`h-4 w-4 text-(--color-text-muted) transition-transform duration-200 ${isCategoryOpen ? 'rotate-180 text-(--color-primary)' : ''}`} />
                 </button>
 
@@ -88,12 +92,12 @@ export default function SearchAndCategory() {
                             <button
                                 key={index}
                                 onClick={() => {
-                                    setSelectedCategory(cat.name);
+                                    onFiltersChange({ ...filters, selectedCategory: cat.name });
                                     setIsCategoryOpen(false);
                                 }}
-                                className={`flex items-center gap-2 w-full px-4 py-2.5 text-[14px] transition-colors ${selectedCategory === cat.name ? 'bg-(--color-primary-light) text-(--color-primary) font-medium' : 'text-(--color-text-main) hover:bg-gray-50'}`}
+                                className={`flex items-center gap-2 w-full px-4 py-2.5 text-[14px] transition-colors ${filters.selectedCategory === cat.name ? 'bg-(--color-primary-light) text-(--color-primary) font-medium' : 'text-(--color-text-main) hover:bg-gray-50'}`}
                             >
-                                {selectedCategory === cat.name && <Check className="h-4 w-4 stroke-[2.5]" />}
+                                {filters.selectedCategory === cat.name && <Check className="h-4 w-4 stroke-[2.5]" />}
                                 {cat.name}
                             </button>
                         ))}
@@ -107,7 +111,7 @@ export default function SearchAndCategory() {
                     onClick={() => setIsStatusOpen(!isStatusOpen)}
                     className={`flex items-center justify-between w-full h-11 px-4 bg-white border ${isStatusOpen ? 'border-(--color-primary) ring-2 ring-(--color-primary)/10' : 'border-(--color-border)'} rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-all duration-200 text-[14px] text-(--color-text-main) cursor-pointer hover:border-gray-300`}
                 >
-                    <span className="truncate">{selectedStatus}</span>
+                    <span className="truncate">{filters.selectedStatus}</span>
                     <ChevronDown className={`h-4 w-4 text-(--color-text-muted) transition-transform duration-200 ${isStatusOpen ? 'rotate-180 text-(--color-primary)' : ''}`} />
                 </button>
 
@@ -117,12 +121,12 @@ export default function SearchAndCategory() {
                             <button
                                 key={status}
                                 onClick={() => {
-                                    setSelectedStatus(status);
+                                    onFiltersChange({ ...filters, selectedStatus: status });
                                     setIsStatusOpen(false);
                                 }}
-                                className={`flex items-center gap-2 w-full px-4 py-2.5 text-[14px] transition-colors ${selectedStatus === status ? 'bg-(--color-primary-light) text-(--color-primary) font-medium' : 'text-(--color-text-main) hover:bg-gray-50'}`}
+                                className={`flex items-center gap-2 w-full px-4 py-2.5 text-[14px] transition-colors ${filters.selectedStatus === status ? 'bg-(--color-primary-light) text-(--color-primary) font-medium' : 'text-(--color-text-main) hover:bg-gray-50'}`}
                             >
-                                {selectedStatus === status && <Check className="h-4 w-4 stroke-[2.5]" />}
+                                {filters.selectedStatus === status && <Check className="h-4 w-4 stroke-[2.5]" />}
                                 {status}
                             </button>
                         ))}

@@ -3,19 +3,12 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { z } from 'zod'
-import { X, Pill, Barcode, DollarSign, Package, Tag, Building2, Calendar, ShieldCheck, Plus, CheckCircle2, XCircle, ChevronDown, Check } from "lucide-react"
+import { X, Pill, Barcode, DollarSign, Package, Tag, Building2, Calendar, ShieldCheck, Plus, ChevronDown, Check } from "lucide-react"
+import { gooeyToast } from "goey-toast"
 import { AddMedicineSchema } from '@/lib/validation'
 import { Category } from '@/types/categoriesTypes'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
-
-type ToastType = "success" | "error" | null;
-
-interface ToastState {
-    type: ToastType;
-    message: string;
-    visible: boolean;
-}
 
 interface AddMedicineModelProps {
     open: boolean;
@@ -51,7 +44,6 @@ const initialFormState: FormFields = {
 export default function AddMedicineModel({ open, setOpen }: AddMedicineModelProps) {
     const [formData, setFormData] = useState<FormFields>(initialFormState);
     const [errors, setErrors] = useState<FormErrors>({});
-    const [toast, setToast] = useState<ToastState>({ type: null, message: "", visible: false });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
@@ -67,13 +59,6 @@ export default function AddMedicineModel({ open, setOpen }: AddMedicineModelProp
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
-
-    // Show toast at bottom-right, auto-dismiss after 3s
-    const showToast = (type: "success" | "error", message: string) => {
-        setToast({ type, message, visible: true });
-        setTimeout(() => setToast((prev) => ({ ...prev, visible: false })), 3000);
-        setTimeout(() => setToast({ type: null, message: "", visible: false }), 3400);
-    };
 
     const onClose = () => {
         setOpen(false);
@@ -160,14 +145,18 @@ export default function AddMedicineModel({ open, setOpen }: AddMedicineModelProp
             const medicineName = result.data.name;
             onClose();
             // 2. Show success toast after modal disappears
-            setTimeout(() => showToast("success", `تمت إضافة "${medicineName}" إلى المخزون بنجاح`), 300);
+            setTimeout(() => gooeyToast.success("تمت العملية بنجاح", {
+                description: `تمت إضافة "${medicineName}" إلى المخزون بنجاح`
+            }), 300);
 
         } catch (error) {
             const msg = error instanceof Error ? error.message : "حدث خطأ غير متوقع، حاول مرة أخرى";
             // 1. Close modal first
             onClose();
             // 2. Show error toast after modal disappears
-            setTimeout(() => showToast("error", msg), 300);
+            setTimeout(() => gooeyToast.error("خطأ في العملية", {
+                description: msg
+            }), 300);
         } finally {
             setIsSubmitting(false);
         }
@@ -187,35 +176,6 @@ export default function AddMedicineModel({ open, setOpen }: AddMedicineModelProp
     // ─── Render ───────────────────────────────────────────────────────────────
     return (
         <>
-            {/* ── Toast: always rendered, independent of modal ── */}
-            {toast.type && (
-                <div
-                    dir="rtl"
-                    className={`fixed bottom-6 right-6 z-200 flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl border max-w-sm w-full transition-all duration-400
-                        ${toast.visible
-                            ? "opacity-100 translate-y-0"
-                            : "opacity-0 translate-y-4 pointer-events-none"
-                        }
-                        ${toast.type === "success"
-                            ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-                            : "bg-red-50 border-red-200 text-red-800"
-                        }`}
-                >
-                    {toast.type === "success" ? (
-                        <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" />
-                    ) : (
-                        <XCircle className="h-5 w-5 text-red-500 shrink-0" />
-                    )}
-                    <p className="text-sm font-semibold flex-1">{toast.message}</p>
-                    <button
-                        onClick={() => setToast((prev) => ({ ...prev, visible: false }))}
-                        className="p-1 rounded-lg hover:bg-black/5 transition-colors shrink-0"
-                    >
-                        <X className="h-4 w-4 opacity-50" />
-                    </button>
-                </div>
-            )}
-
             {/* ── Modal ── */}
             {open && (
                 <div className="fixed inset-0 z-100 flex items-center justify-center p-4 min-h-screen w-screen overflow-y-auto">
@@ -401,8 +361,8 @@ export default function AddMedicineModel({ open, setOpen }: AddMedicineModelProp
                                                                     type="button"
                                                                     onClick={() => handleCategorySelect(cat.name)}
                                                                     className={`flex items-center gap-2 w-full px-4 py-2.5 text-[14px] transition-colors ${formData.category === cat.name
-                                                                            ? 'bg-(--color-primary-light) text-(--color-primary) font-medium'
-                                                                            : 'text-(--color-text-main) hover:bg-gray-50'
+                                                                        ? 'bg-(--color-primary-light) text-(--color-primary) font-medium'
+                                                                        : 'text-(--color-text-main) hover:bg-gray-50'
                                                                         }`}
                                                                 >
                                                                     {formData.category === cat.name && <Check className="h-4 w-4 stroke-[2.5]" />}

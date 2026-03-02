@@ -3,7 +3,8 @@
 
 
 export interface MedicineType {
-    id: number;
+    id?: string;
+    _id?: string;
     pharmacyId: number;
     name: string;
     barcode: string;

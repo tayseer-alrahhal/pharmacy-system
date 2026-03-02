@@ -2,11 +2,13 @@
 "use client"
 import React from 'react';
 import { Edit, Trash2, FileText, ShieldCheck, ChevronRight, ChevronLeft, ChevronsRight, ChevronsLeft } from "lucide-react"
+import { gooeyToast } from "goey-toast"
 import { MedicineType } from "@/types/MedicineTypes"
 import Loader from '../Loader';
+import { FilterState } from './InventoryContainer';
 
 interface MedicineDisplay {
-    id: number
+    id: string
     name: string
     category: string
     manufacturer: string
@@ -55,11 +57,15 @@ function getStatusStyle(status: MedicineDisplay["status"]) {
     }
 }
 
-export default function MedicineTable() {
+interface MedicineTableProps {
+    filters: FilterState;
+}
+
+export default function MedicineTable({ filters }: MedicineTableProps) {
     const [medicines, setMedicines] = React.useState<MedicineDisplay[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
     const [currentPage, setCurrentPage] = React.useState(1);
-    const itemsPerPage = 5; // Reduced to 5 so you can see the pagination with 6 items
+    const itemsPerPage = 5;
 
     React.useEffect(() => {
         const fetchMedicines = async () => {
@@ -69,7 +75,7 @@ export default function MedicineTable() {
                 const data: { medicines: MedicineType[] } = await response.json();
 
                 const formattedMedicines: MedicineDisplay[] = data.medicines.map(med => ({
-                    id: med.id,
+                    id: med._id || med.id || "",
                     name: med.name,
                     category: med.category || "غير محدد",
                     manufacturer: med.manufacturer || "غير محدد",
@@ -91,10 +97,40 @@ export default function MedicineTable() {
         fetchMedicines();
     }, []);
 
+    // Reset to page 1 whenever filters change
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [filters]);
+
+    // Filtering logic
+    const filteredMedicines = React.useMemo(() => {
+        return medicines.filter((medicine) => {
+            // Filter by search query (name or barcode)
+            if (filters.searchQuery) {
+                const query = filters.searchQuery.toLowerCase();
+                const matchesName = medicine.name.toLowerCase().includes(query);
+                const matchesBarcode = medicine.barcode.toLowerCase().includes(query);
+                if (!matchesName && !matchesBarcode) return false;
+            }
+
+            // Filter by category
+            if (filters.selectedCategory !== "كل التصنيفات") {
+                if (medicine.category !== filters.selectedCategory) return false;
+            }
+
+            // Filter by status
+            if (filters.selectedStatus !== "كل الحالات") {
+                if (medicine.status !== filters.selectedStatus) return false;
+            }
+
+            return true;
+        });
+    }, [medicines, filters]);
+
     // Pagination logic
-    const totalPages = Math.ceil(medicines.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredMedicines.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentMedicines = medicines.slice(startIndex, startIndex + itemsPerPage);
+    const currentMedicines = filteredMedicines.slice(startIndex, startIndex + itemsPerPage);
 
     const paginate = (pageNumber: number) => {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
@@ -128,6 +164,45 @@ export default function MedicineTable() {
             </div>
         )
     }
+
+    if (filteredMedicines.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-(--color-border) bg-(--color-bg-card) py-16">
+                <FileText className="mb-4 h-12 w-12 text-(--color-text-muted) opacity-50" />
+                <p className="text-lg font-medium text-(--color-text-muted)">
+                    لا توجد نتائج مطابقة
+                </p>
+                <p className="mt-1 text-sm text-(--color-text-muted) opacity-70">
+                    حاول تغيير معايير البحث أو الفلترة
+                </p>
+            </div>
+        )
+    }
+
+    // delete function
+    const deleteMedicine = async (id: string, name: string) => {
+        try {
+            const result = await fetch(`/api/inventory/${id}`, {
+                method: "DELETE",
+            });
+            const data = await result.json();
+            if (data.success) {
+                setMedicines(medicines.filter((medicine) => medicine.id !== id));
+                gooeyToast.success("تم الحذف بنجاح", {
+                    description: `تم حذف "${name}" نهائياً من المخزون`
+                });
+            } else {
+                gooeyToast.error("فشل الحذف", {
+                    description: data.message || "حدث خطأ أثناء محاولة حذف الدواء"
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            gooeyToast.error("خطأ في الاتصال", {
+                description: "لم نتمكن من الوصول إلى الخادم للقيام بعملية الحذف"
+            });
+        }
+    };
 
     return (
         <div>
@@ -274,6 +349,7 @@ export default function MedicineTable() {
                                             {/* زر الحذف */}
                                             <div className="group relative">
                                                 <button
+                                                    onClick={() => deleteMedicine(medicine.id, medicine.name)}
                                                     className="h-8 w-8 inline-flex items-center justify-center rounded-lg transition-colors text-(--color-danger) hover:bg-[#fee2e2] hover:text-[#EF4444]"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
@@ -295,7 +371,7 @@ export default function MedicineTable() {
             </div>
 
             {/* modern pagination footer - always visible if there are medicines */}
-            {medicines.length > 0 && (
+            {filteredMedicines.length > 0 && (
                 <div className='mt-6 px-4 py-3 flex items-center justify-between border border-(--color-border) bg-(--color-bg-card) rounded-xl shadow-sm' dir="rtl">
                     <div className="flex flex-1 justify-between sm:hidden">
                         <button
@@ -318,9 +394,9 @@ export default function MedicineTable() {
                             <p className="text-sm text-(--color-text-muted)">
                                 عرض من <span className="font-semibold text-(--color-primary)">{startIndex + 1}</span> إلى{" "}
                                 <span className="font-semibold text-(--color-primary)">
-                                    {Math.min(startIndex + itemsPerPage, medicines.length)}
+                                    {Math.min(startIndex + itemsPerPage, filteredMedicines.length)}
                                 </span>{" "}
-                                من أصل <span className="font-semibold text-(--color-primary)">{medicines.length}</span> دواء
+                                من أصل <span className="font-semibold text-(--color-primary)">{filteredMedicines.length}</span> دواء
                             </p>
                         </div>
                         <div>
@@ -405,7 +481,7 @@ export default function MedicineTable() {
                     </div>
                 </div>
             )}
-            
+
         </div>
 
     );
