@@ -11,6 +11,7 @@ export interface FilterState {
     searchQuery: string;
     selectedCategory: string;
     selectedStatus: string;
+    sortOrder: string;
 }
 
 export default function InventoryContainer() {
@@ -19,6 +20,7 @@ export default function InventoryContainer() {
         searchQuery: "",
         selectedCategory: "كل التصنيفات",
         selectedStatus: "كل الحالات",
+        sortOrder: "الافتراضي",
     });
 
     return (

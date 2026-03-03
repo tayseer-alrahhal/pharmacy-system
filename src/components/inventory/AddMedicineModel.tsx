@@ -181,7 +181,7 @@ export default function AddMedicineModel({ open, setOpen }: AddMedicineModelProp
                 <div className="fixed inset-0 z-100 flex items-center justify-center p-4 min-h-screen w-screen overflow-y-auto">
                     {/* Backdrop */}
                     <div
-                        className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
+                        className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity cursor-pointer"
                         onClick={onClose}
                     />
 
@@ -360,7 +360,7 @@ export default function AddMedicineModel({ open, setOpen }: AddMedicineModelProp
                                                                     key={index}
                                                                     type="button"
                                                                     onClick={() => handleCategorySelect(cat.name)}
-                                                                    className={`flex items-center gap-2 w-full px-4 py-2.5 text-[14px] transition-colors ${formData.category === cat.name
+                                                                    className={`flex items-center gap-2 w-full px-4 py-2.5 text-[14px] transition-colors cursor-pointer ${formData.category === cat.name
                                                                         ? 'bg-(--color-primary-light) text-(--color-primary) font-medium'
                                                                         : 'text-(--color-text-main) hover:bg-gray-50'
                                                                         }`}

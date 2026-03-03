@@ -10,6 +10,7 @@ export interface IMedicine extends Document {
     manufacturer?: string;
     expiryDate: Date;
     prescriptionRequired: boolean;
+    createdAt?: Date;
 }
 
 const MedicineSchema = new mongoose.Schema<IMedicine>({
@@ -22,7 +23,7 @@ const MedicineSchema = new mongoose.Schema<IMedicine>({
     manufacturer: { type: String },
     expiryDate: { type: Date, required: true },
     prescriptionRequired: { type: Boolean, required: true },
-});
+}, { timestamps: true });
 
 export const Medicine: Model<IMedicine> =
     mongoose.models.Medicine ||

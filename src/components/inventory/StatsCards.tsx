@@ -29,26 +29,47 @@ export function StatsCards() {
 
 
 
+    const now = new Date();
+    const LOW_STOCK_THRESHOLD = 15;
+
     const stats: StatsData = {
-        total: statsData ? statsData.length : 0,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        available: statsData ? statsData.filter((med: any) => med.quantity > 0 && new Date(med.expiryDate) > new Date()).length : 0,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        low: statsData ? statsData.filter((med: any) => med.quantity > 0 && med.quantity <= 15 && new Date(med.expiryDate) > new Date()).length : 0,
+        total: statsData?.length ?? 0,
+
+        expired: statsData
+            ? statsData.filter(med =>
+                new Date(med.expiryDate) < now
+            ).length
+            : 0,
+
         outOfStock: statsData
-            ? statsData.filter((med) => med.quantity === 0).length
+            ? statsData.filter(med =>
+                med.quantity === 0 &&
+                new Date(med.expiryDate) > now
+            ).length
             : 0,
 
+        low: statsData
+            ? statsData.filter(med =>
+                med.quantity > 0 &&
+                med.quantity <= LOW_STOCK_THRESHOLD &&
+                new Date(med.expiryDate) > now
+            ).length
+            : 0,
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        expired: statsData ? statsData.filter((med: any) => new Date(med.expiryDate) < new Date()).length : 0,
+        available: statsData
+            ? statsData.filter(med =>
+                med.quantity > LOW_STOCK_THRESHOLD &&
+                new Date(med.expiryDate) > now
+            ).length
+            : 0,
+
         totalValue: statsData
-            ? statsData.reduce((total, med) => total + med.price, 0)
+            ? statsData.reduce(
+                (total, med) => total + (med.price * med.quantity),
+                0
+            )
             : 0,
-
-    }
-
-    console.log(stats.low);
+    };
 
 
     const cards = [
@@ -95,6 +116,7 @@ export function StatsCards() {
             icon: DollarSign,
             color: "text-(--color-primary)",
             bg: "bg-(--color-primary-light)",
+            fontSize: "text-sm",
         },
     ]
 
@@ -103,7 +125,7 @@ export function StatsCards() {
             {cards.map((card) => (
                 <div
                     key={card.title}
-                    className="rounded-xl bg-(--color-bg-card) p-4 shadow-sm border border-(--color-border) hover:shadow-md transition"
+                    className="rounded-xl bg-(--color-bg-card) p-4 shadow-sm border border-(--color-border) hover:shadow-md transition cursor-pointer"
                 >
                     <div className="flex items-center gap-3">
                         <div
@@ -117,7 +139,7 @@ export function StatsCards() {
                                 {card.title}
                             </p>
 
-                            <p className="text-lg font-bold text-(--color-text-main)">
+                            <p className={`font-bold text-(--color-text-main) ${card.fontSize || "text-lg"}`}>
                                 {!statsData ? (
                                     <span className="inline-block h-3 w-14 rounded bg-(--color-border) animate-pulse " />
                                 ) : (

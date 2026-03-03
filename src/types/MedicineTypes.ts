@@ -14,4 +14,5 @@ export interface MedicineType {
     manufacturer?: string;
     expiryDate: Date;
     prescriptionRequired: boolean;
+    createdAt?: Date;
 }

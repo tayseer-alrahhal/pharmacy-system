@@ -1,7 +1,7 @@
 
 "use client"
 import React from 'react';
-import { Edit, Trash2, FileText, ShieldCheck, ChevronRight, ChevronLeft, ChevronsRight, ChevronsLeft } from "lucide-react"
+import { Edit, Trash2, FileText, ShieldCheck, ChevronRight, ChevronLeft, ChevronsRight, ChevronsLeft, AlertTriangle, X } from "lucide-react"
 import { gooeyToast } from "goey-toast"
 import { MedicineType } from "@/types/MedicineTypes"
 import Loader from '../Loader';
@@ -18,6 +18,7 @@ interface MedicineDisplay {
     expiryDate: string
     status: "متوفر" | "منخفض" | "نفذ" | "منتهي الصلاحية"
     requiresPrescription: boolean
+    createdAt: number
 }
 
 // دالة لحساب الحالة من البيانات
@@ -65,6 +66,8 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
     const [medicines, setMedicines] = React.useState<MedicineDisplay[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
     const [currentPage, setCurrentPage] = React.useState(1);
+    const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = React.useState(false);
+    const [medicineToDelete, setMedicineToDelete] = React.useState<{ id: string; name: string } | null>(null);
     const itemsPerPage = 5;
 
     React.useEffect(() => {
@@ -84,7 +87,8 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                     price: med.price,
                     expiryDate: new Date(med.expiryDate).toISOString(),
                     status: calculateMedicineStatus(med.quantity, med.expiryDate),
-                    requiresPrescription: med.prescriptionRequired
+                    requiresPrescription: med.prescriptionRequired,
+                    createdAt: med.createdAt ? new Date(med.createdAt).getTime() : 0
                 }));
 
                 setMedicines(formattedMedicines);
@@ -104,7 +108,7 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
 
     // Filtering logic
     const filteredMedicines = React.useMemo(() => {
-        return medicines.filter((medicine) => {
+        let result = medicines.filter((medicine) => {
             // Filter by search query (name or barcode)
             if (filters.searchQuery) {
                 const query = filters.searchQuery.toLowerCase();
@@ -125,6 +129,15 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
 
             return true;
         });
+
+        // Apply sorting
+        if (filters.sortOrder === "الأحدث أولاً") {
+            result = [...result].sort((a, b) => b.createdAt - a.createdAt);
+        } else if (filters.sortOrder === "الأقدم أولاً") {
+            result = [...result].sort((a, b) => a.createdAt - b.createdAt);
+        }
+
+        return result;
     }, [medicines, filters]);
 
     // Pagination logic
@@ -334,7 +347,7 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                                             {/* زر التعديل */}
                                             <div className="group relative">
                                                 <button
-                                                    className="h-8 w-8 inline-flex items-center justify-center rounded-lg transition-colors text-(--color-primary) hover:bg-(--color-primary-light) hover:text-(--color-primary-dark)"
+                                                    className="h-8 w-8 inline-flex items-center justify-center rounded-lg transition-colors text-(--color-primary) hover:bg-(--color-primary-light) hover:text-(--color-primary-dark) cursor-pointer"
                                                 >
                                                     <Edit className="h-4 w-4" />
                                                     <span className="sr-only">تعديل</span>
@@ -349,8 +362,11 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                                             {/* زر الحذف */}
                                             <div className="group relative">
                                                 <button
-                                                    onClick={() => deleteMedicine(medicine.id, medicine.name)}
-                                                    className="h-8 w-8 inline-flex items-center justify-center rounded-lg transition-colors text-(--color-danger) hover:bg-[#fee2e2] hover:text-[#EF4444]"
+                                                    onClick={() => {
+                                                        setMedicineToDelete({ id: medicine.id, name: medicine.name });
+                                                        setIsDeleteConfirmOpen(true);
+                                                    }}
+                                                    className="h-8 w-8 inline-flex items-center justify-center rounded-lg transition-colors text-(--color-danger) hover:bg-[#fee2e2] hover:text-[#EF4444] cursor-pointer"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                     <span className="sr-only">حذف</span>
@@ -377,14 +393,14 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                         <button
                             onClick={() => paginate(currentPage + 1)}
                             disabled={currentPage === totalPages}
-                            className="relative inline-flex items-center rounded-lg border border-(--color-border) bg-white px-5 py-2 text-sm font-medium text-(--color-text-main) hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+                            className="relative inline-flex items-center rounded-lg border border-(--color-border) bg-white px-5 py-2 text-sm font-medium text-(--color-text-main) hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                         >
                             التالي
                         </button>
                         <button
                             onClick={() => paginate(currentPage - 1)}
                             disabled={currentPage === 1}
-                            className="relative ml-3 inline-flex items-center rounded-lg border border-(--color-border) bg-white px-5 py-2 text-sm font-medium text-(--color-text-main) hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+                            className="relative ml-3 inline-flex items-center rounded-lg border border-(--color-border) bg-white px-5 py-2 text-sm font-medium text-(--color-text-main) hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                         >
                             السابق
                         </button>
@@ -405,7 +421,7 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                                 <button
                                     onClick={() => paginate(1)}
                                     disabled={currentPage === 1}
-                                    className="relative inline-flex items-center rounded-lg px-2.5 py-2.5 text-(--color-text-muted) hover:bg-(--color-primary-light) hover:text-(--color-primary) focus:z-20 focus:outline-offset-0 disabled:opacity-20 disabled:hover:bg-transparent transition-all duration-200"
+                                    className="relative inline-flex items-center rounded-lg px-2.5 py-2.5 text-(--color-text-muted) hover:bg-(--color-primary-light) hover:text-(--color-primary) focus:z-20 focus:outline-offset-0 disabled:opacity-20 disabled:hover:bg-transparent transition-all duration-200 cursor-pointer"
                                 >
                                     <span className="sr-only">الأول</span>
                                     <ChevronsRight className="h-4 w-4" aria-hidden="true" />
@@ -415,7 +431,7 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                                 <button
                                     onClick={() => paginate(currentPage - 1)}
                                     disabled={currentPage === 1}
-                                    className="relative inline-flex items-center rounded-lg px-2.5 py-2.5 text-(--color-text-muted) hover:bg-(--color-primary-light) hover:text-(--color-primary) focus:z-20 focus:outline-offset-0 disabled:opacity-20 disabled:hover:bg-transparent transition-all duration-200"
+                                    className="relative inline-flex items-center rounded-lg px-2.5 py-2.5 text-(--color-text-muted) hover:bg-(--color-primary-light) hover:text-(--color-primary) focus:z-20 focus:outline-offset-0 disabled:opacity-20 disabled:hover:bg-transparent transition-all duration-200 cursor-pointer"
                                 >
                                     <span className="sr-only">السابق</span>
                                     <ChevronRight className="h-4 w-4" aria-hidden="true" />
@@ -433,7 +449,7 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                                             <button
                                                 key={number}
                                                 onClick={() => paginate(number)}
-                                                className={`relative inline-flex items-center justify-center min-w-[36px] h-[36px] rounded-lg text-sm font-semibold transition-all duration-200 focus:z-20 focus:outline-offset-0 ${currentPage === number
+                                                className={`relative inline-flex items-center justify-center min-w-[36px] h-[36px] rounded-lg text-sm font-semibold transition-all duration-200 focus:z-20 focus:outline-offset-0 cursor-pointer ${currentPage === number
                                                     ? "bg-(--color-primary) text-white shadow-md shadow-teal-500/20"
                                                     : "text-(--color-text-main) hover:bg-(--color-primary-light) hover:text-(--color-primary)"
                                                     }`}
@@ -461,7 +477,7 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                                 <button
                                     onClick={() => paginate(currentPage + 1)}
                                     disabled={currentPage === totalPages}
-                                    className="relative inline-flex items-center rounded-lg px-2.5 py-2.5 text-(--color-text-muted) hover:bg-(--color-primary-light) hover:text-(--color-primary) focus:z-20 focus:outline-offset-0 disabled:opacity-20 disabled:hover:bg-transparent transition-all duration-200"
+                                    className="relative inline-flex items-center rounded-lg px-2.5 py-2.5 text-(--color-text-muted) hover:bg-(--color-primary-light) hover:text-(--color-primary) focus:z-20 focus:outline-offset-0 disabled:opacity-20 disabled:hover:bg-transparent transition-all duration-200 cursor-pointer"
                                 >
                                     <span className="sr-only">التالي</span>
                                     <ChevronLeft className="h-4 w-4" aria-hidden="true" />
@@ -471,7 +487,7 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                                 <button
                                     onClick={() => paginate(totalPages)}
                                     disabled={currentPage === totalPages}
-                                    className="relative inline-flex items-center rounded-lg px-2.5 py-2.5 text-(--color-text-muted) hover:bg-(--color-primary-light) hover:text-(--color-primary) focus:z-20 focus:outline-offset-0 disabled:opacity-20 disabled:hover:bg-transparent transition-all duration-200"
+                                    className="relative inline-flex items-center rounded-lg px-2.5 py-2.5 text-(--color-text-muted) hover:bg-(--color-primary-light) hover:text-(--color-primary) focus:z-20 focus:outline-offset-0 disabled:opacity-20 disabled:hover:bg-transparent transition-all duration-200 cursor-pointer"
                                 >
                                     <span className="sr-only">الأخير</span>
                                     <ChevronsLeft className="h-4 w-4" aria-hidden="true" />
@@ -482,7 +498,68 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                 </div>
             )}
 
-        </div>
+            {/* Confirmation Modal */}
+            {isDeleteConfirmOpen && (
+                <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+                    <div
+                        className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
+                        onClick={() => setIsDeleteConfirmOpen(false)}
+                    />
+                    <div
+                        className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden border border-red-100 animate-in fade-in zoom-in duration-200"
+                        dir="rtl"
+                    >
+                        <div className="p-6">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-500">
+                                    <AlertTriangle className="h-6 w-6" />
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="text-lg font-bold text-gray-900">حذف الدواء</h3>
+                                    <p className="text-sm text-gray-500 font-medium">هل أنت متأكد من رغبتك في حذف هذا الدواء؟ لا يمكن التراجع عن هذا الإجراء.</p>
+                                </div>
+                                <button
+                                    onClick={() => setIsDeleteConfirmOpen(false)}
+                                    className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors cursor-pointer"
+                                >
+                                    <X className="h-5 w-5" />
+                                </button>
+                            </div>
 
+                            <div className="bg-red-50/50 rounded-xl p-4 mb-6 border border-red-100/50">
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-red-900/60 font-medium">الاسم:</span>
+                                    <span className="text-red-900 font-bold">{medicineToDelete?.name}</span>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={async () => {
+                                        if (medicineToDelete) {
+                                            await deleteMedicine(medicineToDelete.id, medicineToDelete.name);
+                                            setIsDeleteConfirmOpen(false);
+                                            setMedicineToDelete(null);
+                                        }
+                                    }}
+                                    className="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/20 transition-all active:scale-95 cursor-pointer"
+                                >
+                                    تأكيد الحذف
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setIsDeleteConfirmOpen(false);
+                                        setMedicineToDelete(null);
+                                    }}
+                                    className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm font-bold transition-all active:scale-95 cursor-pointer"
+                                >
+                                    إلغاء
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 }
