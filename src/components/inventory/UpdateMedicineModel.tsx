@@ -5,55 +5,66 @@ import React, { useEffect, useRef, useState } from 'react'
 import { z } from 'zod'
 import { X, Pill, Barcode, DollarSign, Package, Tag, Building2, Calendar, ShieldCheck, Plus, ChevronDown, Check } from "lucide-react"
 import { gooeyToast } from "goey-toast"
-import { AddMedicineSchema } from '@/lib/validation'
+import { UpdateMedicineSchema } from '@/lib/validation'
+
 import { Category } from '@/types/categoriesTypes'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-interface AddMedicineModelProps {
+interface UpdateMedicineModelProps {
     open: boolean;
     setOpen: (open: boolean) => void;
-    onAdd?: () => void;
+    medicine: any; // User can define a proper type like IMedicine if needed
+    onUpdate?: (updatedMedicine: any) => void;
 }
 
 
 type FormFields = {
     name: string;
     barcode: string;
-    batchNumber: string;
-    purchasePrice: string;
-    quantity: string;
     category: string;
     manufacturer: string;
-    expiryDate: string;
-    prescriptionRequired: boolean;
     reorderLevel: string;
+    prescriptionRequired: boolean;
 }
+
 
 type FormErrors = Partial<Record<keyof FormFields, string>>;
 
 const initialFormState: FormFields = {
     name: "",
     barcode: "",
-    batchNumber: "",
-    purchasePrice: "",
-    quantity: "",
     category: "",
     manufacturer: "",
-    expiryDate: "",
-    prescriptionRequired: false,
     reorderLevel: "15",
+    prescriptionRequired: false,
 }
+
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export default function AddMedicineModel({ open, setOpen, onAdd }: AddMedicineModelProps) {
+export default function UpdateMedicineModel({ open, setOpen, medicine, onUpdate }: UpdateMedicineModelProps) {
     const [formData, setFormData] = useState<FormFields>(initialFormState);
     const [errors, setErrors] = useState<FormErrors>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
     const categoryRef = useRef<HTMLDivElement>(null);
+
+    // Initialize form with medicine data
+    useEffect(() => {
+        if (open && medicine) {
+            setFormData({
+                name: medicine.name || "",
+                barcode: medicine.barcode || "",
+                category: medicine.category || "",
+                manufacturer: medicine.manufacturer || "",
+                reorderLevel: (medicine.reorderLevel || 15).toString(),
+                prescriptionRequired: !!medicine.prescriptionRequired,
+            });
+        }
+
+    }, [open, medicine]);
 
     // Close category dropdown when clicking outside
     useEffect(() => {
@@ -68,7 +79,6 @@ export default function AddMedicineModel({ open, setOpen, onAdd }: AddMedicineMo
 
     const onClose = () => {
         setOpen(false);
-        setFormData(initialFormState);
         setErrors({});
     };
 
@@ -104,7 +114,6 @@ export default function AddMedicineModel({ open, setOpen, onAdd }: AddMedicineMo
                 const response = await fetch('/api/categories');
                 const data = await response.json();
                 setCategories(data);
-                console.log(data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
             }
@@ -115,18 +124,16 @@ export default function AddMedicineModel({ open, setOpen, onAdd }: AddMedicineMo
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const result = AddMedicineSchema.safeParse({
+        const result = UpdateMedicineSchema.safeParse({
             ...formData,
-            purchasePrice: formData.purchasePrice,
-            quantity: formData.quantity,
-            expiryDate: formData.expiryDate || undefined,
-            reorderLevel: formData.reorderLevel,
+            reorderLevel: Number(formData.reorderLevel),
         });
+
 
         if (!result.success) {
             const fieldErrors: FormErrors = {};
             result.error.issues.forEach((issue: z.ZodIssue) => {
-                const field = issue.path[0] as keyof FormFields;
+                const field = issue.path[0] as keyof FormErrors;
                 if (field && !fieldErrors[field]) {
                     fieldErrors[field] = issue.message;
                 }
@@ -137,34 +144,36 @@ export default function AddMedicineModel({ open, setOpen, onAdd }: AddMedicineMo
 
         setIsSubmitting(true);
         try {
-            const response = await fetch("/api/inventory", {
-                method: "POST",
+            const response = await fetch(`/api/inventory/${medicine._id}`, {
+                method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(result.data),
             });
 
+            const data = await response.json().catch(() => ({}));
+
             if (!response.ok) {
-                const data = await response.json().catch(() => ({}));
-                throw new Error(data?.message || "فشل في إضافة الدواء");
+                throw new Error(data?.message || "فشل في تحديث الدواء");
             }
 
             // 1. Close modal first
             const medicineName = result.data.name;
             onClose();
 
-            // 2. Refresh parent list
-            if (onAdd) onAdd();
+            // 2. Refresh Parent State
+            if (onUpdate && data.data) {
+                onUpdate(data.data);
+            }
 
             // 3. Show success toast after modal disappears
-            setTimeout(() => gooeyToast.success("تمت العملية بنجاح", {
-                description: `تمت إضافة "${medicineName}" إلى المخزون بنجاح`
+            setTimeout(() => gooeyToast.success("تم التعديل بنجاح", {
+                description: `تم تحديث بيانات "${medicineName}" بنجاح`
             }), 300);
+
 
         } catch (error) {
             const msg = error instanceof Error ? error.message : "حدث خطأ غير متوقع، حاول مرة أخرى";
-            // 1. Close modal first
             onClose();
-            // 2. Show error toast after modal disappears
             setTimeout(() => gooeyToast.error("خطأ في العملية", {
                 description: msg
             }), 300);
@@ -189,7 +198,7 @@ export default function AddMedicineModel({ open, setOpen, onAdd }: AddMedicineMo
         <>
             {/* ── Modal ── */}
             {open && (
-                <div className="fixed inset-0 z-100 flex items-center justify-center p-4 min-h-screen w-screen overflow-y-auto">
+                <div className="fixed inset-0 z-100 flex items-center justify-center p-4 min-h-screen w-screen overflow-y-auto font-geist">
                     {/* Backdrop */}
                     <div
                         className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity cursor-pointer"
@@ -205,11 +214,11 @@ export default function AddMedicineModel({ open, setOpen, onAdd }: AddMedicineMo
                         <div className="px-6 py-5 border-b border-(--color-border) flex items-center justify-between bg-linear-to-l from-(--color-primary-light)/30 to-transparent">
                             <div className="flex items-center gap-3">
                                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-(--color-primary) text-white shadow-lg shadow-teal-500/20">
-                                    <Plus className="h-6 w-6" />
+                                    <Tag className="h-6 w-6" />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-bold text-(--color-text-main)">إضافة دواء جديد</h2>
-                                    <p className="text-xs text-(--color-text-muted) font-medium">أدخل تفاصيل الدواء والوجبة الأولى</p>
+                                    <h2 className="text-xl font-bold text-(--color-text-main)">تعديل بيانات الدواء</h2>
+                                    <p className="text-xs text-(--color-text-muted) font-medium">قم بتعديل المعلومات المطلوبة واضغط حفظ</p>
                                 </div>
                             </div>
                             <button
@@ -309,7 +318,7 @@ export default function AddMedicineModel({ open, setOpen, onAdd }: AddMedicineMo
                                             )}
                                         </div>
 
-                                        {/* Category */}
+                                        {/* Category Custom Dropdown */}
                                         <div className="space-y-1.5" ref={categoryRef}>
                                             <label className="text-xs font-bold text-(--color-text-main) pr-1">
                                                 التصنيف <span className="text-red-500">*</span>
@@ -366,107 +375,8 @@ export default function AddMedicineModel({ open, setOpen, onAdd }: AddMedicineMo
                                     </div>
                                 </div>
 
-                                {/* Section 3: First Batch Details */}
-                                <div className="space-y-4 pt-2">
-                                    <h3 className="text-sm font-bold text-(--color-primary) flex items-center gap-2 mb-2">
-                                        <span className="w-1.5 h-4 bg-(--color-primary) rounded-full" />
-                                        تفاصيل الوجبة الأولى
-                                    </h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                        {/* Batch Number */}
-                                        <div className="space-y-1.5">
-                                            <label className="text-xs font-bold text-(--color-text-main) pr-1">
-                                                رقم الوجبة <span className="text-red-500">*</span>
-                                            </label>
-                                            <div className="relative group">
-                                                <Barcode className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-(--color-primary)" />
-                                                <input
-                                                    type="text"
-                                                    name="batchNumber"
-                                                    value={formData.batchNumber}
-                                                    onChange={handleChange}
-                                                    placeholder="مثلاً: B1-2024"
-                                                    className={getInputClass("batchNumber")}
-                                                />
-                                            </div>
-                                            {errors.batchNumber && (
-                                                <p className="text-xs text-red-500 font-medium pr-1 flex items-center gap-1">
-                                                    <span>⚠</span> {errors.batchNumber}
-                                                </p>
-                                            )}
-                                        </div>
 
-                                        {/* Quantity */}
-                                        <div className="space-y-1.5">
-                                            <label className="text-xs font-bold text-(--color-text-main) pr-1">
-                                                الكمية <span className="text-red-500">*</span>
-                                            </label>
-                                            <div className="relative group">
-                                                <Package className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-(--color-primary)" />
-                                                <input
-                                                    type="number"
-                                                    name="quantity"
-                                                    value={formData.quantity}
-                                                    onChange={handleChange}
-                                                    placeholder="0"
-                                                    className={getInputClass("quantity")}
-                                                />
-                                            </div>
-                                            {errors.quantity && (
-                                                <p className="text-xs text-red-500 font-medium pr-1 flex items-center gap-1">
-                                                    <span>⚠</span> {errors.quantity}
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        {/* Purchase Price */}
-                                        <div className="space-y-1.5">
-                                            <label className="text-xs font-bold text-(--color-text-main) pr-1">
-                                                سعر الشراء (ل.س) <span className="text-red-500">*</span>
-                                            </label>
-                                            <div className="relative group">
-                                                <DollarSign className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-(--color-primary)" />
-                                                <input
-                                                    type="number"
-                                                    name="purchasePrice"
-                                                    value={formData.purchasePrice}
-                                                    onChange={handleChange}
-                                                    placeholder="0.00"
-                                                    className={getInputClass("purchasePrice")}
-                                                />
-                                            </div>
-                                            {errors.purchasePrice && (
-                                                <p className="text-xs text-red-500 font-medium pr-1 flex items-center gap-1">
-                                                    <span>⚠</span> {errors.purchasePrice}
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        {/* Expiry Date */}
-                                        <div className="space-y-1.5">
-                                            <label className="text-xs font-bold text-(--color-text-main) pr-1">
-                                                تاريخ الانتهاء <span className="text-red-500">*</span>
-                                            </label>
-                                            <div className="relative group">
-                                                <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-(--color-primary)" />
-                                                <input
-                                                    type="date"
-                                                    name="expiryDate"
-                                                    value={formData.expiryDate}
-                                                    onChange={handleChange}
-                                                    className={getInputClass("expiryDate")}
-                                                />
-                                            </div>
-                                            {errors.expiryDate && (
-                                                <p className="text-xs text-red-500 font-medium pr-1 flex items-center gap-1">
-                                                    <span>⚠</span> {errors.expiryDate}
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Section 4: Extra Details */}
+                                {/* Section 3: Extra Details */}
                                 <div className="space-y-4 pt-2">
                                     <h3 className="text-sm font-bold text-(--color-primary) flex items-center gap-2 mb-2">
                                         <span className="w-1.5 h-4 bg-(--color-primary) rounded-full" />
@@ -498,8 +408,9 @@ export default function AddMedicineModel({ open, setOpen, onAdd }: AddMedicineMo
                                     </div>
                                 </div>
 
+
                                 {/* Prescription Switch */}
-                                <div className="flex items-center justify-between p-4 bg-(--color-primary-light)/20 rounded-2xl border border-(--color-primary)/10">
+                                <div className="flex items-center justify-between p-4 bg-(--color-primary-light)/20 rounded-2xl border border-(--color-primary)/10 font-geist">
                                     <div className="flex items-center gap-3">
                                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-(--color-primary) shadow-sm">
                                             <ShieldCheck className="h-5 w-5" />
@@ -545,8 +456,8 @@ export default function AddMedicineModel({ open, setOpen, onAdd }: AddMedicineMo
                                     </svg>
                                 ) : (
                                     <>
-                                        <Plus className="h-4 w-4" />
-                                        حفظ الدواء
+                                        <Check className="h-4 w-4" />
+                                        تعديل البيانات
                                     </>
                                 )}
                             </button>
@@ -557,3 +468,4 @@ export default function AddMedicineModel({ open, setOpen, onAdd }: AddMedicineMo
         </>
     )
 }
+

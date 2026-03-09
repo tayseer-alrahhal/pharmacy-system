@@ -1,7 +1,8 @@
 'use client'
 import React, { useState } from 'react'
-import { LayoutDashboard, Package, ShoppingCart, Search, Menu } from 'lucide-react'
+import { LayoutDashboard, Package, ShoppingCart, Search, Menu, Truck } from 'lucide-react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 
 export default function HomePage() {
 
@@ -12,96 +13,124 @@ export default function HomePage() {
         return 'تصبح على خير'
     })
 
-
     const modules = [
         {
-            title: 'نقطة البيع', // POS
-            icon: <ShoppingCart size={32} className="text-white" />,
+            title: 'نقطة البيع',
+            icon: <ShoppingCart size={32} />,
             href: '/pos',
-            color: 'bg-[var(--color-primary)]',
+            color: 'bg-teal-600',
         },
         {
-            title: 'المخزن', // Inventory
-            icon: <Package size={32} className="text-white" />,
+            title: 'المخزن',
+            icon: <Package size={32} />,
             href: '/inventory',
-            color: 'bg-[var(--color-primary)]',
+            color: 'bg-teal-600',
         },
         {
-            title: 'لوحة التحكم', // Dashboard
-            icon: <LayoutDashboard size={32} className="text-white" />,
-            href: '/dashboard',
-            color: 'bg-[var(--color-primary)]',
+            title: 'الموردون',
+            icon: <Truck size={32} />,
+            href: '/suppliers',
+            color: 'bg-blue-600',
         },
-        // {
-        //     title: 'الصيدلي', // Pharmacist
-        //     icon: <Briefcase size={32} className="text-white" />,
-        //     href: '/pharmacist',
-        //     color: 'bg-[var(--color-primary)]',
-        // },
+        {
+            title: 'لوحة التحكم',
+            icon: <LayoutDashboard size={32} />,
+            href: '/dashboard',
+            color: 'bg-teal-600',
+        },
     ]
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-teal-50 to-white font-sans text-slate-800" dir="rtl">
+        <div className="min-h-screen bg-linear-to-br from-teal-50/50 to-white font-sans text-slate-800" dir="rtl">
 
             {/* Header */}
-            <header className="px-6 py-4 flex justify-between items-center bg-white/70 backdrop-blur-md fixed top-0 left-0 right-0 z-10 shadow-sm">
+            <motion.header
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                className="px-6 py-4 flex justify-between items-center bg-white/70 backdrop-blur-md fixed top-0 left-0 right-0 z-10 shadow-sm border-b border-teal-100/50"
+            >
                 <div className="flex items-center gap-2">
-                    <h1 className="text-2xl font-bold text-(--color-primary) tracking-tight">
+                    <h1 className="text-2xl font-bold text-teal-600 tracking-tight">
                         نظام <span className="text-slate-600">الصيدلية</span>
                     </h1>
                 </div>
-                <button className="p-2 hover:bg-teal-50/50 rounded-full transition-colors text-(--color-primary)">
+                <button className="p-2 hover:bg-teal-50 rounded-full transition-all text-teal-600 cursor-pointer border border-transparent hover:border-teal-100">
                     <Menu size={24} />
                 </button>
-            </header>
+            </motion.header>
 
 
             {/* Main Content */}
-            <main className="container mx-auto px-4 py-8 flex flex-col items-center mt-20">
+            <main className="container mx-auto px-4 py-8 flex flex-col items-center mt-24">
 
                 {/* User Greeting & Avatar */}
-                <div className="flex flex-col items-center mb-8">
-                    <div className="w-20 h-20 rounded-full bg-slate-200 overflow-hidden mb-4 border-4 border-white shadow-lg">
-                        {/* Placeholder Avatar */}
-                        <div className="w-full h-full bg-linear-to-tr from-teal-200 to-blue-200 flex items-center justify-center text-2xl font-bold text-white">
+                <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="flex flex-col items-center mb-10"
+                >
+                    <div className="w-24 h-24 rounded-3xl bg-white p-1 shadow-xl shadow-teal-900/5 mb-4 relative group">
+                        <div className="w-full h-full rounded-2xl bg-linear-to-tr from-teal-500 to-emerald-400 flex items-center justify-center text-3xl font-bold text-white shadow-inner">
                             م
                         </div>
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full p-1 shadow-md">
+                            <div className="w-full h-full bg-green-500 rounded-full border-2 border-white" />
+                        </div>
                     </div>
-                    <h2 className="text-xl font-medium text-slate-600">{greeting}, <span className="font-bold text-slate-800">تيسير</span></h2>
-                </div>
+                    <h2 className="text-2xl font-medium text-slate-600">
+                        {greeting}, <span className="font-bold text-slate-800">تيسير</span>
+                    </h2>
+                </motion.div>
 
                 {/* Search Bar */}
-                <div className="relative w-full max-w-2xl mb-12 transform hover:scale-[1.01] transition-transform duration-300">
-                    <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
-                        <Search className="text-slate-400" size={20} />
+                <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                    className="relative w-full max-w-2xl mb-16 group"
+                >
+                    <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none transition-transform group-focus-within:scale-110">
+                        <Search className="text-slate-400 group-focus-within:text-teal-600" size={20} />
                     </div>
                     <input
                         type="text"
                         placeholder="بحث ..."
-                        className="w-full py-4 pr-12 pl-6 rounded-full bg-white shadow-[0_4px_20px_-2px_rgba(0,0,0,0.1)] border border-slate-100 focus:outline-none focus:ring-2 focus:ring-(--color-primary) text-lg placeholder:text-slate-300 transition-shadow"
+                        className="w-full py-5 pr-14 pl-6 rounded-2xl bg-white shadow-xl shadow-teal-900/5 border border-slate-100 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 text-lg placeholder:text-slate-300 transition-all"
                     />
-                </div>
+                </motion.div>
 
                 {/* Modules Grid */}
-                <div className="flex flex-wrap justify-center gap-8 w-full max-w-5xl">
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2, staggerChildren: 0.1 }}
+                    className="flex flex-wrap justify-center gap-10 w-full max-w-5xl"
+                >
                     {modules.map((module, index) => (
-                        <Link
+                        <motion.div
                             key={index}
-                            href={module.href}
-                            className="group flex flex-col items-center gap-3 w-28"
+                            whileHover={{ y: -8 }}
+                            transition={{ type: "spring", stiffness: 300 }}
                         >
-                            <div className={`w-20 h-20 rounded-2xl ${module.color} shadow-lg shadow-teal-900/10 flex items-center justify-center transform group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300 cursor-pointer`}>
-                                {module.icon}
-                            </div>
-                            <span className="text-sm font-semibold text-slate-600 group-hover:text-(--color-primary) transition-colors uppercase tracking-wide text-center">
-                                {module.title}
-                            </span>
-                        </Link>
+                            <Link
+                                href={module.href}
+                                className="group flex flex-col items-center gap-4 w-32"
+                            >
+                                <div className={`w-24 h-24 rounded-[2rem] ${module.color} shadow-2xl shadow-teal-900/20 flex items-center justify-center transform group-hover:scale-110 group-active:scale-95 transition-all duration-300 cursor-pointer relative overflow-hidden`}>
+                                    <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className="text-white group-hover:rotate-6 transition-transform">
+                                        {module.icon}
+                                    </div>
+                                </div>
+                                <span className="text-base font-bold text-slate-600 group-hover:text-teal-600 transition-colors tracking-wide text-center uppercase">
+                                    {module.title}
+                                </span>
+                            </Link>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
             </main>
         </div>
     )
 }
-
 

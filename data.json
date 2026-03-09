@@ -1,602 +1,902 @@
 [
   {
+    "pharmacyId": 1,
     "name": "Panadol 500mg",
     "barcode": "6281007053321",
-    "price": 15000,
-    "quantity": 50,
-    "expiryDate": "2027-05-20",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "مسكنات",
     "manufacturer": "GSK",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 50,
+        "purchasePrice": 15000,
+        "expiryDate": "2027-05-20T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-01-10T10:00:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "أوجمنتين 1 غرام",
     "barcode": "6281007053322",
-    "price": 45000,
-    "quantity": 14,
-    "expiryDate": "2026-12-10",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "مضادات حيوية",
     "manufacturer": "GSK",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 14,
+        "purchasePrice": 45000,
+        "expiryDate": "2026-12-10T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-01-12T14:30:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Brufen 400mg",
     "barcode": "6281007053323",
-    "price": 12500,
-    "quantity": 30,
-    "expiryDate": "2026-08-15",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "مسكنات",
     "manufacturer": "Abbott",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 30,
+        "purchasePrice": 12500,
+        "expiryDate": "2026-08-15T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-01-15T09:15:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "كلافوكس 625 ملغ",
     "barcode": "6281007053324",
-    "price": 38000,
-    "quantity": 5,
-    "expiryDate": "2025-11-30",
-    "status": "قارب على الانتهاء",
-    "prescriptionRequired": true,
     "category": "مضادات حيوية",
     "manufacturer": "Medico",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 5,
+        "purchasePrice": 38000,
+        "expiryDate": "2025-11-30T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-01-18T16:45:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Diclon 75mg",
     "barcode": "6281007053325",
-    "price": 9500,
-    "quantity": 100,
-    "expiryDate": "2028-01-01",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "مسكنات",
     "manufacturer": "Thameco",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 100,
+        "purchasePrice": 9500,
+        "expiryDate": "2028-01-01T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-01-20T11:20:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "فولتارين جل",
     "barcode": "6281007053326",
-    "price": 18000,
-    "quantity": 25,
-    "expiryDate": "2026-03-12",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "مراهم",
     "manufacturer": "Novartis",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 25,
+        "purchasePrice": 18000,
+        "expiryDate": "2026-03-12T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-01-22T08:50:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Aspirin 100mg",
     "barcode": "6281007053327",
-    "price": 5000,
-    "quantity": 200,
-    "expiryDate": "2027-10-10",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "أدوية قلب",
     "manufacturer": "Bayer",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 200,
+        "purchasePrice": 5000,
+        "expiryDate": "2027-10-10T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-01-25T13:10:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "بانادول إكسترا",
     "barcode": "6281007053328",
-    "price": 17500,
-    "quantity": 0,
-    "expiryDate": "2026-05-05",
-    "status": "غير متوفر",
-    "prescriptionRequired": false,
     "category": "مسكنات",
     "manufacturer": "GSK",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 0,
+        "purchasePrice": 17500,
+        "expiryDate": "2026-05-05T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-01-28T10:05:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Humulin N",
     "barcode": "6281007053329",
-    "price": 65000,
-    "quantity": 12,
-    "expiryDate": "2025-09-18",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "أدوية سكري",
     "manufacturer": "Lilly",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 12,
+        "purchasePrice": 65000,
+        "expiryDate": "2025-09-18T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-01-30T15:40:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "ديكساميثازون أمبول",
     "barcode": "6281007053330",
-    "price": 7500,
-    "quantity": 40,
-    "expiryDate": "2026-07-22",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "مضادات التهاب",
     "manufacturer": "Unipharma",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 40,
+        "purchasePrice": 7500,
+        "expiryDate": "2026-07-22T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-01T09:25:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Flagyl 500mg",
     "barcode": "6281007053331",
-    "price": 14000,
-    "quantity": 60,
-    "expiryDate": "2027-11-11",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "مضادات حيوية",
     "manufacturer": "Sanofi",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 60,
+        "purchasePrice": 14000,
+        "expiryDate": "2027-11-11T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-03T11:55:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "أوميبرازول 20 ملغ",
     "barcode": "6281007053332",
-    "price": 22000,
-    "quantity": 35,
-    "expiryDate": "2026-12-30",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "أدوية معدة",
     "manufacturer": "Asia",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 35,
+        "purchasePrice": 22000,
+        "expiryDate": "2026-12-30T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-05T14:15:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Cetamol Syrup",
     "barcode": "6281007053333",
-    "price": 8500,
-    "quantity": 20,
-    "expiryDate": "2026-04-14",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "فيتامينات",
     "manufacturer": "Ibn Al-Haytham",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 20,
+        "purchasePrice": 8500,
+        "expiryDate": "2026-04-14T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-07T16:30:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "زيثرومكس 500 ملغ",
     "barcode": "6281007053334",
-    "price": 42000,
-    "quantity": 8,
-    "expiryDate": "2025-08-20",
-    "status": "قارب على الانتهاء",
-    "prescriptionRequired": true,
     "category": "مضادات حيوية",
     "manufacturer": "Pfizer",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 8,
+        "purchasePrice": 42000,
+        "expiryDate": "2025-08-20T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-09T12:00:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Levofloxacin 500mg",
     "barcode": "6281007053335",
-    "price": 35000,
-    "quantity": 15,
-    "expiryDate": "2027-01-15",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "مضادات حيوية",
     "manufacturer": "Alpha",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 15,
+        "purchasePrice": 35000,
+        "expiryDate": "2027-01-15T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-11T10:45:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "اتورفاستاتين 20 ملغ",
     "barcode": "6281007053336",
-    "price": 28000,
-    "quantity": 45,
-    "expiryDate": "2028-03-03",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "أدوية قلب",
     "manufacturer": "Diamed",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 45,
+        "purchasePrice": 28000,
+        "expiryDate": "2028-03-03T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-13T14:20:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Metformin 850mg",
     "barcode": "6281007053337",
-    "price": 11000,
-    "quantity": 120,
-    "expiryDate": "2027-09-30",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "أدوية سكري",
     "manufacturer": "Merck",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 120,
+        "purchasePrice": 11000,
+        "expiryDate": "2027-09-30T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-15T09:30:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "أملوديبين 5 ملغ",
     "barcode": "6281007053338",
-    "price": 13000,
-    "quantity": 55,
-    "expiryDate": "2026-11-20",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "أدوية ضغط",
     "manufacturer": "Pfizer",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 55,
+        "purchasePrice": 13000,
+        "expiryDate": "2026-11-20T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-17T11:10:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Losartan 50mg",
     "barcode": "6281007053339",
-    "price": 24000,
-    "quantity": 30,
-    "expiryDate": "2027-02-14",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "أدوية ضغط",
     "manufacturer": "MSD",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 30,
+        "purchasePrice": 24000,
+        "expiryDate": "2027-02-14T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-19T08:55:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "سيمفاستاتين 10 ملغ",
     "barcode": "6281007053340",
-    "price": 19000,
-    "quantity": 40,
-    "expiryDate": "2026-06-18",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "أدوية قلب",
     "manufacturer": "Unipharma",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 40,
+        "purchasePrice": 19000,
+        "expiryDate": "2026-06-18T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-21T13:40:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Ventolin Inhaler",
     "barcode": "6281007053341",
-    "price": 32000,
-    "quantity": 25,
-    "expiryDate": "2027-08-12",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "بخاخات",
     "manufacturer": "GSK",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 25,
+        "purchasePrice": 32000,
+        "expiryDate": "2027-08-12T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-22T10:25:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "سيريتايد بخاخ",
     "barcode": "6281007053342",
-    "price": 85000,
-    "quantity": 10,
-    "expiryDate": "2026-10-30",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "بخاخات",
     "manufacturer": "GSK",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 10,
+        "purchasePrice": 85000,
+        "expiryDate": "2026-10-30T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-23T15:15:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Neurobion Ampoules",
     "barcode": "6281007053343",
-    "price": 25000,
-    "quantity": 30,
-    "expiryDate": "2028-05-15",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "فيتامينات",
     "manufacturer": "Merck",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 30,
+        "purchasePrice": 25000,
+        "expiryDate": "2028-05-15T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-24T09:40:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "فيتامين سي 1000",
     "barcode": "6281007053344",
-    "price": 12000,
-    "quantity": 70,
-    "expiryDate": "2026-12-01",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "فيتامينات",
     "manufacturer": "Hoffman",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 70,
+        "purchasePrice": 12000,
+        "expiryDate": "2026-12-01T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-25T11:50:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Bepanthen Ointment",
     "barcode": "6281007053345",
-    "price": 21000,
-    "quantity": 20,
-    "expiryDate": "2027-03-22",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "مراهم",
     "manufacturer": "Bayer",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 20,
+        "purchasePrice": 21000,
+        "expiryDate": "2027-03-22T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-26T14:20:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "فيوسيدين كريم",
     "barcode": "6281007053346",
-    "price": 18500,
-    "quantity": 4,
-    "expiryDate": "2025-10-15",
-    "status": "قارب على الانتهاء",
-    "prescriptionRequired": false,
     "category": "مراهم",
     "manufacturer": "LEO",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 4,
+        "purchasePrice": 18500,
+        "expiryDate": "2025-10-15T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-27T16:35:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Roaccutane 20mg",
     "barcode": "6281007053347",
-    "price": 120000,
-    "quantity": 15,
-    "expiryDate": "2026-09-09",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "مقوي عام",
     "manufacturer": "Roche",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 15,
+        "purchasePrice": 120000,
+        "expiryDate": "2026-09-09T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-02-28T09:10:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "كيناكومب كريم",
     "barcode": "6281007053348",
-    "price": 15000,
-    "quantity": 35,
-    "expiryDate": "2027-04-20",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "مراهم",
     "manufacturer": "Bristol-Myers",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 35,
+        "purchasePrice": 15000,
+        "expiryDate": "2027-04-20T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-01T11:25:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Spasmo-Canulase",
     "barcode": "6281007053349",
-    "price": 14000,
-    "quantity": 50,
-    "expiryDate": "2026-11-11",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "أدوية معدة",
     "manufacturer": "Novartis",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 50,
+        "purchasePrice": 14000,
+        "expiryDate": "2026-11-11T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-01T14:45:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "تراي-بي أقراص",
     "barcode": "6281007053350",
-    "price": 9000,
-    "quantity": 100,
-    "expiryDate": "2027-12-30",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "فيتامينات",
     "manufacturer": "Amoun",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 100,
+        "purchasePrice": 9000,
+        "expiryDate": "2027-12-30T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-02T08:30:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Gaviscon Liquid",
     "barcode": "6281007053351",
-    "price": 28000,
-    "quantity": 12,
-    "expiryDate": "2026-02-28",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "أدوية معدة",
     "manufacturer": "Reckitt",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 12,
+        "purchasePrice": 28000,
+        "expiryDate": "2026-02-28T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-02T10:15:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "باندول نايت",
     "barcode": "6281007053352",
-    "price": 20000,
-    "quantity": 0,
-    "expiryDate": "2025-12-12",
-    "status": "غير متوفر",
-    "prescriptionRequired": false,
     "category": "مسكنات",
     "manufacturer": "GSK",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 0,
+        "purchasePrice": 20000,
+        "expiryDate": "2025-12-12T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-02T13:40:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Clexane 4000",
     "barcode": "6281007053353",
-    "price": 45000,
-    "quantity": 24,
-    "expiryDate": "2026-05-14",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "مضادات التهاب",
     "manufacturer": "Sanofi",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 24,
+        "purchasePrice": 45000,
+        "expiryDate": "2026-05-14T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T09:10:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "ميتفورمين 500 ملغ",
     "barcode": "6281007053354",
-    "price": 8500,
-    "quantity": 150,
-    "expiryDate": "2028-01-20",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "أدوية سكري",
     "manufacturer": "Merck",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 150,
+        "purchasePrice": 8500,
+        "expiryDate": "2028-01-20T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T11:20:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Euthyrox 50mcg",
     "barcode": "6281007053355",
-    "price": 16000,
-    "quantity": 40,
-    "expiryDate": "2027-10-10",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "مقوي عام",
     "manufacturer": "Merck",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 40,
+        "purchasePrice": 16000,
+        "expiryDate": "2027-10-10T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T14:45:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "كونكور 5 ملغ",
     "barcode": "6281007053356",
-    "price": 23000,
-    "quantity": 30,
-    "expiryDate": "2026-07-07",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "أدوية ضغط",
     "manufacturer": "Merck",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 30,
+        "purchasePrice": 23000,
+        "expiryDate": "2026-07-07T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T16:50:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Xanax 0.5mg",
     "barcode": "6281007053357",
-    "price": 55000,
-    "quantity": 10,
-    "expiryDate": "2027-04-01",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "مسكنات",
     "manufacturer": "Pfizer",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 10,
+        "purchasePrice": 55000,
+        "expiryDate": "2027-04-01T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T20:15:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "ليبراكس أقراص",
     "barcode": "6281007053358",
-    "price": 19500,
-    "quantity": 45,
-    "expiryDate": "2026-09-20",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "أدوية معدة",
     "manufacturer": "Roche",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 45,
+        "purchasePrice": 19500,
+        "expiryDate": "2026-09-20T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T21:30:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Daonil 5mg",
     "barcode": "6281007053359",
-    "price": 14500,
-    "quantity": 60,
-    "expiryDate": "2027-11-30",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "أدوية سكري",
     "manufacturer": "Sanofi",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 60,
+        "purchasePrice": 14500,
+        "expiryDate": "2027-11-30T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T22:15:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "أدرينالين أمبول",
     "barcode": "6281007053360",
-    "price": 12000,
-    "quantity": 15,
-    "expiryDate": "2026-03-15",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "أدوية قلب",
     "manufacturer": "Bayer",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 15,
+        "purchasePrice": 12000,
+        "expiryDate": "2026-03-15T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T23:00:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Zyrtec Tablets",
     "barcode": "6281007053361",
-    "price": 18000,
-    "quantity": 30,
-    "expiryDate": "2027-06-25",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "مسكنات",
     "manufacturer": "UCB",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 30,
+        "purchasePrice": 18000,
+        "expiryDate": "2027-06-25T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T23:30:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "كلاريتين شراب",
     "barcode": "6281007053362",
-    "price": 22000,
-    "quantity": 8,
-    "expiryDate": "2025-12-05",
-    "status": "قارب على الانتهاء",
-    "prescriptionRequired": false,
     "category": "فيتامينات",
     "manufacturer": "Bayer",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 8,
+        "purchasePrice": 22000,
+        "expiryDate": "2025-12-05T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T23:35:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Adol 500mg",
     "barcode": "6281007053363",
-    "price": 7000,
-    "quantity": 100,
-    "expiryDate": "2028-02-14",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "مسكنات",
     "manufacturer": "Julphar",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 100,
+        "purchasePrice": 7000,
+        "expiryDate": "2028-02-14T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T23:40:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "هايموكس 500 ملغ",
     "barcode": "6281007053364",
-    "price": 26000,
-    "quantity": 50,
-    "expiryDate": "2027-08-30",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "مضادات حيوية",
     "manufacturer": "Tabuk",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 50,
+        "purchasePrice": 26000,
+        "expiryDate": "2027-08-30T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T23:45:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Voltaren Supp 50mg",
     "barcode": "6281007053365",
-    "price": 13500,
-    "quantity": 20,
-    "expiryDate": "2026-11-12",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "مسكنات",
     "manufacturer": "Novartis",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 20,
+        "purchasePrice": 13500,
+        "expiryDate": "2026-11-12T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T23:46:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "بريدنيزولون 5 ملغ",
     "barcode": "6281007053366",
-    "price": 9500,
-    "quantity": 80,
-    "expiryDate": "2027-05-05",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "مضادات التهاب",
     "manufacturer": "Hapharm",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 80,
+        "purchasePrice": 9500,
+        "expiryDate": "2027-05-05T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T23:47:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Amaryl 2mg",
     "barcode": "6281007053367",
-    "price": 31000,
-    "quantity": 40,
-    "expiryDate": "2027-09-18",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "أدوية سكري",
     "manufacturer": "Sanofi",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 40,
+        "purchasePrice": 31000,
+        "expiryDate": "2027-09-18T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T23:48:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "توسيفان شراب",
     "barcode": "6281007053368",
-    "price": 11000,
-    "quantity": 15,
-    "expiryDate": "2026-04-22",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "مقوي عام",
     "manufacturer": "Dimas",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 15,
+        "purchasePrice": 11000,
+        "expiryDate": "2026-04-22T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T23:49:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "Plavix 75mg",
     "barcode": "6281007053369",
-    "price": 145000,
-    "quantity": 20,
-    "expiryDate": "2027-01-30",
-    "status": "متوفر",
-    "prescriptionRequired": true,
     "category": "أدوية قلب",
     "manufacturer": "Sanofi",
+    "prescriptionRequired": true,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 20,
+        "purchasePrice": 145000,
+        "expiryDate": "2027-01-30T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T23:50:00.000Z"
   },
   {
+    "pharmacyId": 1,
     "name": "بانثينول كريم",
     "barcode": "6281007053370",
-    "price": 8000,
-    "quantity": 35,
-    "expiryDate": "2028-06-15",
-    "status": "متوفر",
-    "prescriptionRequired": false,
     "category": "مراهم",
     "manufacturer": "Nile",
+    "prescriptionRequired": false,
+    "reorderLevel": 15,
+    "batches": [
+      {
+        "batchNumber": "B1",
+        "quantity": 35,
+        "purchasePrice": 8000,
+        "expiryDate": "2028-06-15T00:00:00.000Z"
+      }
+    ],
     "createdAt": "2026-03-03T23:51:00.000Z"
   }
 ]

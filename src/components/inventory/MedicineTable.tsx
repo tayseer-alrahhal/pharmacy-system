@@ -1,11 +1,16 @@
 
 "use client"
 import React from 'react';
-import { Edit, Trash2, FileText, ShieldCheck, ChevronRight, ChevronLeft, ChevronsRight, ChevronsLeft, AlertTriangle, X } from "lucide-react"
+import { Edit, Trash2, FileText, ShieldCheck, ChevronRight, ChevronLeft, ChevronsRight, ChevronsLeft, AlertTriangle, X, PlusCircle, History } from "lucide-react"
 import { gooeyToast } from "goey-toast"
-import { MedicineType } from "@/types/MedicineTypes"
+import { MedicineType, BatchType } from "@/types/MedicineTypes"
 import Loader from '../Loader';
 import { FilterState } from './InventoryContainer';
+import UpdateMedicineModel from './UpdateMedicineModel';
+import { getTotalQuantity, getMedicineStatus, getNearestExpiryDate } from '@/lib/inventoryUtils';
+import AddBatchModel from '@/components/inventory/AddBatchModel';
+import MovementHistoryModal from '@/components/inventory/MovementHistoryModal';
+
 
 interface MedicineDisplay {
     id: string
@@ -13,37 +18,14 @@ interface MedicineDisplay {
     category: string
     manufacturer: string
     barcode: string
-    quantity: number
-    price: number
-    expiryDate: string
+    totalQuantity: number
+    batchCount: number
+    nearestExpiry: string
     status: "متوفر" | "منخفض" | "نفذ" | "منتهي الصلاحية"
     requiresPrescription: boolean
     createdAt: number
 }
 
-// دالة لحساب الحالة من البيانات
-function calculateMedicineStatus(quantity: number, expiryDate: Date): MedicineDisplay["status"] {
-    const now = new Date();
-    const expiry = new Date(expiryDate);
-
-    // إذا كان منتهي الصلاحية
-    if (expiry <= now) {
-        return "منتهي الصلاحية";
-    }
-
-    // إذا نفذ من المخزون
-    if (quantity === 0) {
-        return "نفذ";
-    }
-
-    // إذا كان المخزون منخفض (أقل من أو يساوي 15)
-    if (quantity <= 15) {
-        return "منخفض";
-    }
-
-    // متوفر
-    return "متوفر";
-}
 
 function getStatusStyle(status: MedicineDisplay["status"]) {
     switch (status) {
@@ -60,15 +42,47 @@ function getStatusStyle(status: MedicineDisplay["status"]) {
 
 interface MedicineTableProps {
     filters: FilterState;
+    refreshKey?: number;
+    onRefresh?: () => void;
 }
 
-export default function MedicineTable({ filters }: MedicineTableProps) {
+
+export default function MedicineTable({ filters, refreshKey, onRefresh }: MedicineTableProps) {
     const [medicines, setMedicines] = React.useState<MedicineDisplay[]>([]);
+    const [originalMedicines, setOriginalMedicines] = React.useState<MedicineType[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
     const [currentPage, setCurrentPage] = React.useState(1);
     const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = React.useState(false);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = React.useState(false);
+    const [isBatchModalOpen, setIsBatchModalOpen] = React.useState(false);
+    const [medicineToUpdate, setMedicineToUpdate] = React.useState<MedicineType | null>(null);
+    const [medicineForBatch, setMedicineForBatch] = React.useState<MedicineType | null>(null);
     const [medicineToDelete, setMedicineToDelete] = React.useState<{ id: string; name: string } | null>(null);
+    const [isDeleting, setIsDeleting] = React.useState(false);
+    const [isHistoryModalOpen, setIsHistoryModalOpen] = React.useState(false);
+    const [historyMedicine, setHistoryMedicine] = React.useState<{ id: string; name: string } | null>(null);
     const itemsPerPage = 5;
+
+    const formatMedicineDisplay = (med: MedicineType): MedicineDisplay => {
+        const totalQty = getTotalQuantity(med);
+        const nearestExpiry = getNearestExpiryDate(med);
+        const status = getMedicineStatus(med);
+
+        return {
+            id: med._id || med.id || "",
+            name: med.name,
+            category: med.category || "غير محدد",
+            manufacturer: med.manufacturer || "غير محدد",
+            barcode: med.barcode,
+            totalQuantity: totalQty,
+            batchCount: (med.batches || []).length,
+            nearestExpiry: nearestExpiry ? nearestExpiry.toISOString() : "N/A",
+            status: status,
+            requiresPrescription: med.prescriptionRequired,
+            createdAt: med.createdAt ? new Date(med.createdAt).getTime() : 0
+        };
+    };
+
 
     React.useEffect(() => {
         const fetchMedicines = async () => {
@@ -76,20 +90,10 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                 setIsLoading(true);
                 const response = await fetch("/api/inventory");
                 const data: { medicines: MedicineType[] } = await response.json();
+                setOriginalMedicines(data.medicines);
 
-                const formattedMedicines: MedicineDisplay[] = data.medicines.map(med => ({
-                    id: med._id || med.id || "",
-                    name: med.name,
-                    category: med.category || "غير محدد",
-                    manufacturer: med.manufacturer || "غير محدد",
-                    barcode: med.barcode,
-                    quantity: med.quantity,
-                    price: med.price,
-                    expiryDate: new Date(med.expiryDate).toISOString(),
-                    status: calculateMedicineStatus(med.quantity, med.expiryDate),
-                    requiresPrescription: med.prescriptionRequired,
-                    createdAt: med.createdAt ? new Date(med.createdAt).getTime() : 0
-                }));
+                const formattedMedicines: MedicineDisplay[] = data.medicines.map(med => formatMedicineDisplay(med));
+
 
                 setMedicines(formattedMedicines);
             } catch (error) {
@@ -99,7 +103,7 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
             }
         };
         fetchMedicines();
-    }, []);
+    }, [refreshKey]);
 
     // Reset to page 1 whenever filters change
     React.useEffect(() => {
@@ -193,6 +197,18 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
     }
 
     // delete function
+    const handleUpdateMedicine = (updatedMed: MedicineType) => {
+        // Update originalMedicines
+        setOriginalMedicines(prev => prev.map(m => (m._id || m.id) === (updatedMed._id || updatedMed.id) ? updatedMed : m));
+
+        // Update formatted medicines
+        const formatted = formatMedicineDisplay(updatedMed);
+        setMedicines(prev => prev.map(m => m.id === formatted.id ? formatted : m));
+
+        if (onRefresh) onRefresh();
+    };
+
+
     const deleteMedicine = async (id: string, name: string) => {
         try {
             const result = await fetch(`/api/inventory/${id}`, {
@@ -201,6 +217,7 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
             const data = await result.json();
             if (data.success) {
                 setMedicines(medicines.filter((medicine) => medicine.id !== id));
+                if (onRefresh) onRefresh();
                 gooeyToast.success("تم الحذف بنجاح", {
                     description: `تم حذف "${name}" نهائياً من المخزون`
                 });
@@ -237,19 +254,19 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                                     رقم الباركود
                                 </th>
                                 <th className="px-4 py-3 text-right text-sm font-semibold text-(--color-text-main)">
-                                    الكمية
+                                    إجمالي الكمية
                                 </th>
                                 <th className="px-4 py-3 text-right text-sm font-semibold text-(--color-text-main)">
-                                    السعر
+                                    عدد الوجبات
                                 </th>
                                 <th className="px-4 py-3 text-right text-sm font-semibold text-(--color-text-main)">
-                                    تاريخ الانتهاء
+                                    أقرب انتهاء
                                 </th>
                                 <th className="px-4 py-3 text-right text-sm font-semibold text-(--color-text-main)">
                                     الحالة
                                 </th>
                                 <th className="px-4 py-3 text-center text-sm font-semibold text-(--color-text-main)">
-                                    الاجراءات
+                                    الأجراءات
                                 </th>
                             </tr>
                         </thead>
@@ -301,36 +318,38 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                                         </code>
                                     </td>
 
-                                    {/* الكمية */}
+                                    {/* إجمالي الكمية */}
                                     <td className="px-4 py-4">
                                         <div>
                                             <span
-                                                className={`font-semibold text-sm ${medicine.quantity <= 15
+                                                className={`font-semibold text-sm ${medicine.totalQuantity <= 15
                                                     ? "text-(--color-danger)"
                                                     : "text-(--color-text-main)"
                                                     }`}
                                             >
-                                                {medicine.quantity}
+                                                {medicine.totalQuantity}
                                             </span>
                                         </div>
                                     </td>
 
-                                    {/* السعر */}
+                                    {/* عدد الوجبات */}
                                     <td className="px-4 py-4">
                                         <span className="text-sm font-medium text-(--color-text-main)">
-                                            {medicine.price.toFixed(2)} ل.س
+                                            {medicine.batchCount}
                                         </span>
                                     </td>
 
-                                    {/* تاريخ الانتهاء */}
+                                    {/* أقرب انتهاء */}
                                     <td className="px-4 py-4">
                                         <span
-                                            className={`text-sm ${new Date(medicine.expiryDate) <= new Date()
+                                            className={`text-sm ${medicine.nearestExpiry !== "N/A" && new Date(medicine.nearestExpiry) <= new Date()
                                                 ? "font-semibold text-(--color-danger)"
                                                 : "text-(--color-text-main)"
                                                 }`}
                                         >
-                                            {new Date(medicine.expiryDate).toLocaleDateString("ar-SA")}
+                                            {medicine.nearestExpiry !== "N/A"
+                                                ? new Date(medicine.nearestExpiry).toLocaleDateString("ar-SA")
+                                                : "---"}
                                         </span>
                                     </td>
 
@@ -344,9 +363,57 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                                     {/* الإجراءات */}
                                     <td className="px-4 py-4">
                                         <div className="flex items-center justify-center gap-1">
+                                            {/* زر سجل الحركات */}
+                                            <div className="group relative">
+                                                <button
+                                                    onClick={() => {
+                                                        setHistoryMedicine({ id: medicine.id, name: medicine.name });
+                                                        setIsHistoryModalOpen(true);
+                                                    }}
+                                                    className="h-8 w-8 inline-flex items-center justify-center rounded-lg transition-colors text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
+                                                >
+                                                    <History className="h-4 w-4" />
+                                                    <span className="sr-only">سجل الحركات</span>
+                                                </button>
+                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block">
+                                                    <div className="rounded bg-gray-900 px-2 py-1 text-xs text-white whitespace-nowrap">
+                                                        سجل الحركات
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* زر إضافة وجبة */}
+                                            <div className="group relative">
+                                                <button
+                                                    onClick={() => {
+                                                        const med = originalMedicines.find(m => (m._id || m.id) === medicine.id);
+                                                        if (med) {
+                                                            setMedicineForBatch(med);
+                                                            setIsBatchModalOpen(true);
+                                                        }
+                                                    }}
+                                                    className="h-8 w-8 inline-flex items-center justify-center rounded-lg transition-colors text-teal-600 hover:bg-teal-50 hover:text-teal-700 cursor-pointer"
+                                                >
+                                                    <PlusCircle className="h-4 w-4" />
+                                                    <span className="sr-only">إضافة وجبة</span>
+                                                </button>
+                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block">
+                                                    <div className="rounded bg-gray-900 px-2 py-1 text-xs text-white whitespace-nowrap">
+                                                        إضافة وجبة
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             {/* زر التعديل */}
                                             <div className="group relative">
                                                 <button
+                                                    onClick={() => {
+                                                        const med = originalMedicines.find(m => (m._id || m.id) === medicine.id);
+                                                        if (med) {
+                                                            setMedicineToUpdate(med);
+                                                            setIsUpdateModalOpen(true);
+                                                        }
+                                                    }}
                                                     className="h-8 w-8 inline-flex items-center justify-center rounded-lg transition-colors text-(--color-primary) hover:bg-(--color-primary-light) hover:text-(--color-primary-dark) cursor-pointer"
                                                 >
                                                     <Edit className="h-4 w-4" />
@@ -382,6 +449,7 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                                 </tr>
                             ))}
                         </tbody>
+
                     </table>
                 </div>
             </div>
@@ -537,14 +605,24 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                                 <button
                                     onClick={async () => {
                                         if (medicineToDelete) {
+                                            setIsDeleting(true);
                                             await deleteMedicine(medicineToDelete.id, medicineToDelete.name);
+                                            setIsDeleting(false);
                                             setIsDeleteConfirmOpen(false);
                                             setMedicineToDelete(null);
                                         }
                                     }}
-                                    className="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/20 transition-all active:scale-95 cursor-pointer"
+                                    disabled={isDeleting}
+                                    className="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/20 transition-all active:scale-95 cursor-pointer flex items-center justify-center min-h-[44px]"
                                 >
-                                    تأكيد الحذف
+                                    {isDeleting ? (
+                                        <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24" fill="none">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z" />
+                                        </svg>
+                                    ) : (
+                                        "تأكيد الحذف"
+                                    )}
                                 </button>
                                 <button
                                     onClick={() => {
@@ -560,6 +638,34 @@ export default function MedicineTable({ filters }: MedicineTableProps) {
                     </div>
                 </div>
             )}
+            {/* Update Modal */}
+            {medicineToUpdate && (
+                <UpdateMedicineModel
+                    open={isUpdateModalOpen}
+                    setOpen={setIsUpdateModalOpen}
+                    medicine={medicineToUpdate}
+                    onUpdate={handleUpdateMedicine}
+                />
+            )}
+            {/* Add Batch Modal */}
+            {medicineForBatch && (
+                <AddBatchModel
+                    open={isBatchModalOpen}
+                    setOpen={setIsBatchModalOpen}
+                    medicine={medicineForBatch}
+                    onUpdate={handleUpdateMedicine}
+                />
+            )}
+            {/* Movement History Modal */}
+            {historyMedicine && (
+                <MovementHistoryModal
+                    open={isHistoryModalOpen}
+                    setOpen={setIsHistoryModalOpen}
+                    medicineId={historyMedicine.id}
+                    medicineName={historyMedicine.name}
+                />
+            )}
+
         </div>
     );
 }

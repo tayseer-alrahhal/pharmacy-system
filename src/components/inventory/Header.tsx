@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react'
-import { Plus, Pill, RefreshCw, LogOut } from "lucide-react"
+import { Plus, Pill, RefreshCw, LogOut, Truck } from "lucide-react"
 import Link from 'next/link'
 import AddMedicineModel from './AddMedicineModel'
 
@@ -36,12 +36,20 @@ export default function Header({ onAddClick }: HeaderProps) {
                         <RefreshCw className="h-4 w-4" />
                     </button>
 
+                    <Link
+                        href="/suppliers"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 transition-all active:scale-95 cursor-pointer border border-blue-100"
+                    >
+                        <Truck className="h-4 w-4" />
+                        الموردون
+                    </Link>
+
                     <button
                         onClick={onAddClick}
-                        className="flex items-center px-4 py-2 rounded-md text-white transition bg-(--color-primary-dark) hover:bg-(--color-primary) cursor-pointer"
+                        className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 shadow-lg shadow-teal-600/20 transition-all active:scale-95 cursor-pointer"
                     >
-                        <Plus className="ml-2 h-4 w-4" />
-                        اضافة دواء
+                        <Plus className="h-4 w-4" />
+                        إضافة دواء
                     </button>
 
                     <Link href="/" className='flex items-center px-4 py-3 rounded-md text-white transition bg-(--color-danger) hover:bg-(--color-danger)/80 cursor-pointer'>

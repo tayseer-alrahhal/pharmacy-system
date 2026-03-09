@@ -16,6 +16,7 @@ export interface FilterState {
 
 export default function InventoryContainer() {
     const [open, setOpen] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
     const [filters, setFilters] = useState<FilterState>({
         searchQuery: "",
         selectedCategory: "كل التصنيفات",
@@ -23,16 +24,19 @@ export default function InventoryContainer() {
         sortOrder: "الافتراضي",
     });
 
+    const triggerRefresh = () => setRefreshKey(prev => prev + 1);
+
     return (
         <>
             <Header onAddClick={() => setOpen(true)} />
             <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6">
-                <StatsCards />
+                <StatsCards refreshKey={refreshKey} />
                 <SearchAndCategory filters={filters} onFiltersChange={setFilters} />
-                <MedicineTable filters={filters} />
+                <MedicineTable filters={filters} refreshKey={refreshKey} onRefresh={triggerRefresh} />
             </main>
 
-            <AddMedicineModel open={open} setOpen={setOpen} />
+            <AddMedicineModel open={open} setOpen={setOpen} onAdd={triggerRefresh} />
         </>
     )
 }
+
